@@ -1,7 +1,6 @@
 package application;
 
 import java.awt.event.ActionListener;
-
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -28,8 +27,9 @@ public class LoginView {
 	private TextField userTextField = new TextField();
 	private Label pw = new Label("Password:");
 	private PasswordField pwBox = new PasswordField();
+	private Label status = new Label("");
 	private Button signInBtn = new Button("Sign in");
-
+	private LoginViewModel authentication;
 
 	public LoginView() {
 		
@@ -52,6 +52,7 @@ public class LoginView {
 		hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
 		hbBtn.getChildren().add(this.signInBtn);
 		grid.add(hbBtn, 1, 4);
+		grid.add(status, 0, 4);
 		
 		final Text actiontarget = new Text();
         grid.add(actiontarget, 1, 6);
@@ -60,20 +61,24 @@ public class LoginView {
 			 
 		    @Override
 		    public void handle(ActionEvent e) {
-		    	
-		    
+		    	System.out.println("[DEBUG] Username = "+userTextField.getText());
+		        System.out.println("[DEBUG] Password = "+pwBox.getText());
+		        authentication = new LoginViewModel(userTextField.getText(),pwBox.getText());
+		        
 		        actiontarget.setFill(Color.FIREBRICK);
 		        actiontarget.setText("Sign in button pressed");
 		        
-		        //if (userTextField.getText().equals("admin") && pwBox.getText().equals("password")){
+		        if (authentication.check()==true) {
+		        	System.out.println("[DEBUG] Authentication success!");
 		        	Stage stageTheLabelBelongs = (Stage) actiontarget.getScene().getWindow();
-		        	//BorderPane secondPane = new BorderPane();
-
 		        	MainScreen secondPane = new MainScreen();
 		        	stageTheLabelBelongs.setScene(secondPane.getScene());
 		        	stageTheLabelBelongs.setX(0);
 		        	stageTheLabelBelongs.setY(0);
-		        //}
+		        } else {
+		        	System.out.println("[DEBUG] Authentication failed!");
+		        	actiontarget.setText("Login failed!");
+		        }
 		    }
 		});
 		
