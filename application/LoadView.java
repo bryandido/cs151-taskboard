@@ -12,10 +12,16 @@ public class LoadView {
 	private LoadViewModel loadViewModel = new LoadViewModel();
 	
 	public LoadView(Stage stage) {
-		selectedFile = this.fileChooser.showOpenDialog(stage);
+		this.selectedFile = this.fileChooser.showOpenDialog(stage);
 	}
 	
 	public TaskBoardModel LoadFromFile() {
-		return loadViewModel.load(selectedFile);
+		if (this.selectedFile==null) {
+			System.out.println("LOAD OPERATION CANCELLED!");
+			return null;
+		} else {
+			System.out.println("SUCCESSFULLY LOADED!");
+			return loadViewModel.load(this.selectedFile);
+		}
 	}
 }

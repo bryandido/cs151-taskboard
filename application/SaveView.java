@@ -10,14 +10,22 @@ public class SaveView {
 	private FileChooser fileChooser = new FileChooser();
 	private File file;
 	
-	public SaveView(/*TaskBoardModel boardModel, Scene prevScene*/Stage stage){
+	public SaveView(Stage stage){
 		
 		FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("SER files (*.ser)", "*.ser");
-		fileChooser.getExtensionFilters().add(extFilter);
-		file = fileChooser.showSaveDialog(stage);
+		this.fileChooser.getExtensionFilters().add(extFilter);
+		this.file = fileChooser.showSaveDialog(stage);
 	}
 	
 	public void saveToFile(TaskBoardModel boardModel) {
-		saveViewModel.save(boardModel, this.file);
+		if (this.file==null) {
+			System.out.println("SAVE OPERATION CANCELLED!");
+		} else {
+			if(saveViewModel.save(boardModel, this.file)) {
+				System.out.println("SUCCESSFULLY SAVED!");
+			} else {
+				System.out.println("SAVE FAILED!!!");
+			}
+		}
 	}
 }

@@ -103,10 +103,11 @@ public class MainScreen {
 	// Creation/Edit/Selection of different and unique projects
 	// Creation/Edit/Selection of different and unique columns
 	// Creation/Edit/Selection of different and unique tasks
+	// Saving and loading projects
 	
 	// WHAT NEEDS TO BE FINISHED
 	
-	// Saving and loading projects/columns/tasks
+	// (DONE!!!) Saving and loading projects/columns/tasks 
 	// and refresh listeners for each creation, edit, and task
 	// Resolve the mismatch click in refreshTask()
 	
@@ -184,7 +185,11 @@ public class MainScreen {
 		loadBtn.setOnAction(ActionEvent -> {
 			Stage stageTheLabelBelongs = (Stage) loadBtn.getScene().getWindow();
 			LoadView load = new LoadView(stageTheLabelBelongs);
-			this.boardModel = load.LoadFromFile();
+			TaskBoardModel temp;
+			temp = load.LoadFromFile();
+			if (temp !=null) {
+				this.boardModel = temp;
+			}
 		});
 		
 		createBtn.setOnAction(new EventHandler<ActionEvent>() {
