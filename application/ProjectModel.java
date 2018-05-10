@@ -1,10 +1,12 @@
 package application;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProjectModel {
+public class ProjectModel implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
 	private String projectName = "Project1";
 	private List<String> columns = new ArrayList<String>();
 	private List<TaskModel> taskList = new ArrayList<TaskModel>();

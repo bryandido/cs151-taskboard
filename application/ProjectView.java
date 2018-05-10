@@ -42,7 +42,6 @@ public class ProjectView {
 	
 	private Scene prevScene;
 	
-	
 	 
 	public ProjectView(TaskBoardModel boardModel, Scene prevScene){
 		
@@ -99,7 +98,6 @@ public class ProjectView {
 	public void backToMainScreen(){
 		Stage stageTheLabelBelongs = (Stage) this.cancelBtn.getScene().getWindow();
     	stageTheLabelBelongs.setScene(this.prevScene);
-		
 	}
 	
 	public void createColumnField(){
@@ -259,5 +257,4 @@ public class ProjectView {
 
 
 	}
-	
 }

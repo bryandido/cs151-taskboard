@@ -120,7 +120,7 @@ public class TaskView {
 	}
 	public void backToMainScreen(){
 		Stage stageTheLabelBelongs = (Stage) this.cancelBtn.getScene().getWindow();
-    	stageTheLabelBelongs.setScene(this.prevScene);
+    	stageTheLabelBelongs.setScene(this.prevScene); 
 		
 	}
 	

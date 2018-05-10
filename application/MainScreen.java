@@ -3,7 +3,6 @@ package application;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -36,7 +35,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
@@ -175,6 +173,20 @@ public class MainScreen {
 		    }
 		});
 		
+		//Saves Project
+		saveBtn.setOnAction(ActionEvent -> {
+			Stage stageTheLabelBelongs = (Stage) saveBtn.getScene().getWindow();
+			SaveView save = new SaveView(stageTheLabelBelongs);
+			save.saveToFile(this.boardModel);
+		});
+				
+		//Loads Project
+		loadBtn.setOnAction(ActionEvent -> {
+			Stage stageTheLabelBelongs = (Stage) loadBtn.getScene().getWindow();
+			LoadView load = new LoadView(stageTheLabelBelongs);
+			this.boardModel = load.LoadFromFile();
+		});
+		
 		createBtn.setOnAction(new EventHandler<ActionEvent>() {
 			 
 		    @Override
@@ -184,7 +196,7 @@ public class MainScreen {
 		        	ProjectView secondPane = new ProjectView(boardModel, getScene());
 		        	stageTheLabelBelongs.setScene(secondPane.getScene());
 		        	stageTheLabelBelongs.setX(0);
-		        	stageTheLabelBelongs.setY(0);  	
+		        	stageTheLabelBelongs.setY(0);
 		    }
 		});
 		
@@ -237,8 +249,6 @@ public class MainScreen {
 		    	refreshTask();
 		    }   
 		});
-		
-		
 		
 	}
 	
@@ -382,8 +392,7 @@ public class MainScreen {
 	        	TaskView secondPane = new TaskView(boardModel, getScene(), dropDownMenuIndex);
 	        	stageTheLabelBelongs.setScene(secondPane.getScene());
 	        	stageTheLabelBelongs.setX(0);
-	        	stageTheLabelBelongs.setY(0); 
-
+	        	stageTheLabelBelongs.setY(0);
 		    }
 		});
 
@@ -395,5 +404,4 @@ public class MainScreen {
 	public Scene getScene(){
 		return this.scene;
 	}
-	
 }
