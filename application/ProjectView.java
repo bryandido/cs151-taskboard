@@ -19,7 +19,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-public class ProjectView {
+public class ProjectView implements Subject{
 	
 	private TaskBoardModel boardModel;
 	private Scene scene;
@@ -42,6 +42,7 @@ public class ProjectView {
 	
 	private Scene prevScene;
 	
+	private Observer observer;
 	 
 	public ProjectView(TaskBoardModel boardModel, Scene prevScene){
 		
@@ -88,16 +89,23 @@ public class ProjectView {
 			 
 		    @Override
 		    public void handle(ActionEvent e) {
-				backToMainScreen();
+				backToMainScreen("cancel");
 
 		    }
 		});
 
 	}
 	
-	public void backToMainScreen(){
+	public void backToMainScreen(String s){
 		Stage stageTheLabelBelongs = (Stage) this.cancelBtn.getScene().getWindow();
     	stageTheLabelBelongs.setScene(this.prevScene);
+    	if (s.equals("create")) {
+    		this.notifyObserver("create");
+    	}else if (s.equals("edit")){
+    		this.notifyObserver("edit");
+    	} else {
+    		this.notifyObserver("cancel");
+    	}
 	}
 	
 	public void createColumnField(){
@@ -144,7 +152,7 @@ public class ProjectView {
 		
 		this.projectModel.setProjectName(projectTextField.getText());
 		this.boardModel.addProjectToList(this.projectModel);
-    	backToMainScreen();
+    	backToMainScreen("create");
 	
 	}
 	
@@ -211,7 +219,7 @@ public class ProjectView {
 			 
 		    @Override
 		    public void handle(ActionEvent e) {
-				backToMainScreen();
+				backToMainScreen("cancel");
 
 		    }
 		});
@@ -228,7 +236,7 @@ public class ProjectView {
 		} //Adds new columns
 	
 		boardModel.getProjectList().get(dropDownMenuIndex).setProjectName(projectTextField.getText());
-    	backToMainScreen();
+    	backToMainScreen("edit");
 	}
 	
 	public void createEditColumnField(String defaultText){
@@ -256,5 +264,20 @@ public class ProjectView {
 		});
 
 
+	}
+
+	@Override
+	public void register(Observer o) {
+		this.observer = o;
+	}
+
+	@Override
+	public void unregister(Observer o) {
+		//For Future Implementation
+	}
+
+	@Override
+	public void notifyObserver(String s) {
+			observer.update(s);
 	}
 }

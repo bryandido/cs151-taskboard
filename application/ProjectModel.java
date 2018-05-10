@@ -36,8 +36,4 @@ public class ProjectModel implements Serializable {
 		this.taskList.add(taskList);
 	}
 	
-	
-	
-	
-	
 }

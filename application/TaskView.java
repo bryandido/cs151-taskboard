@@ -24,7 +24,9 @@ import javafx.stage.Stage;
 
 
 
-public class TaskView {
+public class TaskView implements Subject{
+	
+	private Observer observer;
 	
 	private TaskBoardModel boardModel;
 	private Scene scene;
@@ -121,7 +123,7 @@ public class TaskView {
 	public void backToMainScreen(){
 		Stage stageTheLabelBelongs = (Stage) this.cancelBtn.getScene().getWindow();
     	stageTheLabelBelongs.setScene(this.prevScene); 
-		
+		this.notifyObserver("task");
 	}
 	
 	public void createTask(){
@@ -213,5 +215,17 @@ public class TaskView {
 		boardModel.getProjectList().get(dropDownMenuIndex).getTasks().get(currentTaskPassByValue).setDueDate(dueDateTextField.getText());
 		backToMainScreen();
 
+	}
+	@Override
+	public void register(Observer o) {
+		this.observer = o;
+	}
+	@Override
+	public void unregister(Observer o) {
+		// Future
+	}
+	@Override
+	public void notifyObserver(String s) {
+		observer.update(s);
 	}
 }

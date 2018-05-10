@@ -41,7 +41,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 
 
-public class MainScreen {
+public class MainScreen implements Observer {
 	
 	private Scene scene;
 
@@ -66,7 +66,22 @@ public class MainScreen {
 	private int dropDownMenuIndex;
 	private int currentTaskPassByValue = 0;
 
-	//To get a specific project
+	// Static used as a counter
+	private static int observerIDTracker = 0;
+	// Used to track the observers
+	private int observerID = 0;
+	// Will hold reference to the ProjectView object
+	private Subject projectView;
+	//To get a specific ProjectView
+	private ProjectView pView;
+	// Will hold reference to the taskView object
+	private Subject taskView;
+	// to get a specific TaskView
+	private TaskView tView;
+	// Same
+	private Subject loadView;
+	// Same
+	private LoadView lView;
 	//taskBoardModel.getProjectList().get(INDEX OF WHICH PROJECT)
 	
 	//To get a specific column under a specific project
@@ -184,9 +199,10 @@ public class MainScreen {
 		//Loads Project
 		loadBtn.setOnAction(ActionEvent -> {
 			Stage stageTheLabelBelongs = (Stage) loadBtn.getScene().getWindow();
-			LoadView load = new LoadView(stageTheLabelBelongs);
+			lView = new LoadView(stageTheLabelBelongs);
+			//addSubject3(lView);
 			TaskBoardModel temp;
-			temp = load.LoadFromFile();
+			temp = lView.LoadFromFile();
 			if (temp !=null) {
 				this.boardModel = temp;
 			}
@@ -198,8 +214,9 @@ public class MainScreen {
 		    public void handle(ActionEvent e) {
 
 		        	Stage stageTheLabelBelongs = (Stage) createBtn.getScene().getWindow();	        	
-		        	ProjectView secondPane = new ProjectView(boardModel, getScene());
-		        	stageTheLabelBelongs.setScene(secondPane.getScene());
+		        	pView = new ProjectView(boardModel, getScene());
+		        	addSubject(pView);
+		        	stageTheLabelBelongs.setScene(pView.getScene());
 		        	stageTheLabelBelongs.setX(0);
 		        	stageTheLabelBelongs.setY(0);
 		    }
@@ -211,8 +228,9 @@ public class MainScreen {
 		    public void handle(ActionEvent e) {
 
 		        	Stage stageTheLabelBelongs = (Stage) createBtn.getScene().getWindow();
-		        	ProjectView secondPane = new ProjectView(boardModel, getScene(), dropDownMenuIndex);
-		        	stageTheLabelBelongs.setScene(secondPane.getScene());
+		        	pView = new ProjectView(boardModel, getScene(), dropDownMenuIndex);
+		        	addSubject(pView);
+		        	stageTheLabelBelongs.setScene(pView.getScene());
 		        	stageTheLabelBelongs.setX(0);
 		        	stageTheLabelBelongs.setY(0);  	
 		    }
@@ -268,7 +286,6 @@ public class MainScreen {
 	
 	
 	public void refreshTask(){
-		
 		if (boardModel.getProjectList().get(dropDownMenuIndex).getTasks().size() != 0){
 	        for (int i = 0; i < boardModel.getProjectList().get(dropDownMenuIndex).getColumns().size(); i++){
 	        	for (int j = 0; j < boardModel.getProjectList().get(dropDownMenuIndex).getTasks().size();j++){
@@ -330,9 +347,9 @@ public class MainScreen {
 	                            //Integer rowIndex = GridPane.getColumnIndex(source);
 	                            
 	                            Stage stageTheLabelBelongs = (Stage) createBtn.getScene().getWindow();
-	        		        	TaskView secondPane = new TaskView(boardModel, getScene(), dropDownMenuIndex, colIndex);
+	        		        	tView = new TaskView(boardModel, getScene(), dropDownMenuIndex, colIndex);
 	        		        	//TaskView secondPane = new TaskView(boardModel, getScene(), dropDownMenuIndex, currentTaskPassByValue);
-	        		        	stageTheLabelBelongs.setScene(secondPane.getScene());
+	        		        	stageTheLabelBelongs.setScene(tView.getScene());
 	        		        	stageTheLabelBelongs.setX(0);
 	        		        	stageTheLabelBelongs.setY(0); 
 	                            
@@ -395,6 +412,7 @@ public class MainScreen {
 		    public void handle(ActionEvent e) {
 		    	Stage stageTheLabelBelongs = (Stage) newTaskBtn.getScene().getWindow();	        	
 	        	TaskView secondPane = new TaskView(boardModel, getScene(), dropDownMenuIndex);
+	        	addSubject2(secondPane);
 	        	stageTheLabelBelongs.setScene(secondPane.getScene());
 	        	stageTheLabelBelongs.setX(0);
 	        	stageTheLabelBelongs.setY(0);
@@ -409,4 +427,46 @@ public class MainScreen {
 	public Scene getScene(){
 		return this.scene;
 	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////
+	//THESE ARE OBSERVERS
+	@Override
+	
+	//Refreshes done if subject notifies observer with message
+	public void update(String s) {
+		if (s.equals("create")) {
+			addProjectList("temp");
+			refreshPage();
+		} else if (s.equals("edit")) {
+			refreshPage();
+		} else if (s.equals("task")){
+    		refreshTask();
+    	} else if (s.equals("load")){
+    		refreshPage();
+    	}else {
+			//Do Nothing
+		}
+	}
+	
+	//Adds ProjectView object to observe
+	public void addSubject(ProjectView projectview) {
+		this.projectView = projectview;
+    	this.observerID = ++observerIDTracker;
+    	System.out.println("New Observer " + this.observerID);
+    	this.projectView.register(this);
+	}
+	
+	//Adds TaskView object to observe
+	public void addSubject2(TaskView taskview) {
+		this.taskView = taskview;
+		System.out.println("New Observer " + this.observerID);
+		this.taskView.register(this);
+	}
+	
+	/*
+	public void addSubject3(LoadView loadview) {
+		this.loadView = loadview;
+		System.out.println("New Observer " + this.observerID);
+		this.loadView.register(this);
+	}*/
 }
