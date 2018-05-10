@@ -1,6 +1,8 @@
 package application;
 
-public class TaskModel {
+import java.io.Serializable;
+
+public class TaskModel implements Serializable{
 
 	private String taskName = "Task1";
 	private String description;
