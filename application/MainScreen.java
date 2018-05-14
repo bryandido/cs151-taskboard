@@ -3,6 +3,9 @@ package application;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.plaf.metal.MetalIconFactory.FolderIcon16;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -205,6 +208,13 @@ public class MainScreen implements Observer {
 			temp = lView.LoadFromFile();
 			if (temp !=null) {
 				this.boardModel = temp;
+				for(int j = 0; j < this.boardModel.getProjectList().size(); j++){
+					for(int i = 0; i < this.boardModel.getProjectList().get(j).getColumns().size(); i++){
+						addProjectList("temp");
+						refreshPage();
+						refreshTask();
+					}
+				}
 			}
 		});
 		
@@ -286,25 +296,40 @@ public class MainScreen implements Observer {
 	
 	
 	public void refreshTask(){
+		
+		while (bottomGrid.getChildren().size() != 0){
+    		bottomGrid.getChildren().remove(0);
+    		bottomGridCount--;
+    	}
+
+
+    	for (int i = 0; i < boardModel.getProjectList().get(dropDownMenuIndex).getColumns().size(); i++){
+    		createColumn(boardModel.getProjectList().get(dropDownMenuIndex).getColumns().get(i));
+    	}	
+		
 		if (boardModel.getProjectList().get(dropDownMenuIndex).getTasks().size() != 0){
 	        for (int i = 0; i < boardModel.getProjectList().get(dropDownMenuIndex).getColumns().size(); i++){
 	        	for (int j = 0; j < boardModel.getProjectList().get(dropDownMenuIndex).getTasks().size();j++){
 	                if (boardModel.getProjectList().get(dropDownMenuIndex).getTasks().get(j).getStatus()
 	                		.equals(boardModel.getProjectList().get(dropDownMenuIndex).getColumns().get(i))){
 	            		
-	                	Label taskName = new Label();
-	            		Text taskDescription = new Text();
-	            		Label taskStatus = new Label();
-	            		Label taskDueDate = new Label();
+	                	Label name = new Label("Name: ");
+	                	Label description = new Label("Description: ");
+	                	Label status = new Label("Column: ");
+	                	Label dueDate = new Label("Due Date: ");
 	                	
-	            		taskName.setText("Name: " + boardModel.getProjectList()
-	            						.get(dropDownMenuIndex).getTasks().get(j).getTaskName());
-	            		taskDescription.setText("Description: " + boardModel.getProjectList()
-	            						.get(dropDownMenuIndex).getTasks().get(j).getDescription());
-	                	taskStatus.setText("Status: " + boardModel.getProjectList()
-	                					.get(dropDownMenuIndex).getTasks().get(j).getStatus());
-	                	taskDueDate.setText("Due Date: " + boardModel.getProjectList()
-	                					.get(dropDownMenuIndex).getTasks().get(j).getDueDate());
+	                	Text taskName = new Text(boardModel.getProjectList()
+        						.get(dropDownMenuIndex).getTasks().get(j).getTaskName());
+	            		Text taskDescription = new Text(boardModel.getProjectList()
+        						.get(dropDownMenuIndex).getTasks().get(j).getDescription());
+	            		Text taskStatus = new Text(boardModel.getProjectList()
+            					.get(dropDownMenuIndex).getTasks().get(j).getStatus());
+	            		Text taskDueDate = new Text(boardModel.getProjectList()
+            					.get(dropDownMenuIndex).getTasks().get(j).getDueDate());
+	            		
+	            		
+	                	
+	                
 	                	 		
 	                	GridPane taskGrid = new GridPane();
 	                    RowConstraints rowConstraint1 = new RowConstraints(0);
@@ -318,16 +343,23 @@ public class MainScreen implements Observer {
 	                	taskGrid.setMaxWidth(200);
 	                	taskGrid.setMaxHeight(300);
 	                	taskDescription.wrappingWidthProperty().bind(taskGrid.widthProperty());
+	                
+	                	taskGrid.add(name, 1, 1);
+	                	taskGrid.add(description, 1, 2);
 	                	
-	                	taskGrid.add(taskName, 1, 1);
-	                	taskGrid.add(taskDescription, 1, 2);
-	                	taskGrid.getRowConstraints().addAll(rowConstraint1, rowConstraint2, rowConstraint3);
-	                	taskGrid.getColumnConstraints().addAll(columnConstraint1, columnConstraint2);
-
-	                	taskGrid.add(taskDueDate, 1, 3);
+	                	taskGrid.add(dueDate, 1, 3);
 	                	
 	                	//TODO: DELETE WHEN DONE VV
-	                	taskGrid.add(taskStatus, 1, 4);
+	                	taskGrid.add(status, 1, 4);
+	                	
+	                	taskGrid.add(taskName, 2, 1);
+	                	taskGrid.add(taskDescription, 2, 2);
+	                	taskGrid.getRowConstraints().addAll(rowConstraint1, rowConstraint2, rowConstraint3);
+	                	taskGrid.getColumnConstraints().addAll(columnConstraint1, new ColumnConstraints(100), new ColumnConstraints(150));
+
+	                	taskGrid.add(taskDueDate, 2, 3);
+	                	//TODO: DELETE WHEN DONE VV
+	                	taskGrid.add(taskStatus, 2, 4);
 	                	
 	                	bottomGrid.addColumn(i , taskGrid);  	
 	         
@@ -342,16 +374,34 @@ public class MainScreen implements Observer {
 	                        @Override
 	                        public void handle(MouseEvent mouseEvent) {
 	                        	
-	                        	Node source = (Node)mouseEvent.getSource() ;
-	                            Integer colIndex = GridPane.getColumnIndex(source);
-	                            //Integer rowIndex = GridPane.getColumnIndex(source);
+	                           Node source = (Node)mouseEvent.getSource();
+	                           Integer colIndex = GridPane.getColumnIndex(source);
+	                           Integer rowIndex = GridPane.getRowIndex(source);
+	                           Node currentTaskName = (Text)taskGrid.getChildren().get(5);
+	                           System.out.println(((Text) currentTaskName).getText());
+	                           String taskName = ((Text) currentTaskName).getText();
+	                           
+	                           //int c = boardModel.getProjectList().get(dropDownMenuIndex).getTasks().indexOf(b);
+	                           for (int i = 0; i < boardModel.getProjectList().get(dropDownMenuIndex).getTasks().size(); i++){
+	                        	   if (boardModel.getProjectList().get(dropDownMenuIndex).getTasks().get(i).getTaskName() == taskName)
+	                        	   {
+	                        		   currentTaskPassByValue = i;
+	                        	   }
+	                           }
+	                           
+	                          // System.out.println(c);
+	                           //taskGrid.getChildren().remove(0);
+	                           // for (int i = 0; i < boardModel.getProjectList().get(dropDownMenuIndex).getTasks().size(); i++){
+	                           // 	System.out.println(i + " " + boardModel.getProjectList().get(dropDownMenuIndex).getTasks().get(i).getTaskName());
+	                           // }
 	                            
 	                            Stage stageTheLabelBelongs = (Stage) createBtn.getScene().getWindow();
-	        		        	tView = new TaskView(boardModel, getScene(), dropDownMenuIndex, colIndex);
+	        		        	tView = new TaskView(boardModel, getScene(), dropDownMenuIndex, currentTaskPassByValue);
 	        		        	//TaskView secondPane = new TaskView(boardModel, getScene(), dropDownMenuIndex, currentTaskPassByValue);
 	        		        	stageTheLabelBelongs.setScene(tView.getScene());
 	        		        	stageTheLabelBelongs.setX(0);
 	        		        	stageTheLabelBelongs.setY(0); 
+	        		        	
 	                            
 	                        }
 	                    });
@@ -364,6 +414,8 @@ public class MainScreen implements Observer {
 	
 	//////////////////////////////////////////////////////////////////////////////////////////////
 
+	
+	
 	
 	public void refreshPage(){
 		while (bottomGrid.getChildren().size() != 0){
